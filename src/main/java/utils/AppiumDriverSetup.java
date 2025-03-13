@@ -5,47 +5,50 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.options.XCUITestOptions;
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
 
 import java.net.URL;
 
-public class Hooks {
-    private static ThreadLocal<AppiumDriver> driver = new ThreadLocal<>();
+public class AppiumDriverSetup {
+    private static ThreadLocal<AppiumDriver> appiumDriver = new ThreadLocal<>();
 
-    @Before
     public static AppiumDriver getDriver(String platform) {
-        if (driver.get() == null) {
+        if (appiumDriver.get() == null) {
             try {
                 if (platform.equalsIgnoreCase("android")) {
                     UiAutomator2Options options = new UiAutomator2Options()
                             .setDeviceName(ConfigManager.getProperty("android.deviceName"))
-                            .setApp(ConfigManager.getProperty("android.appPath"))
+                            .setPlatformVersion(ConfigManager.getProperty("android.platformVersion"))
+                            .setApp(System.getProperty("user.dir") + ConfigManager.getProperty("android.appPath"))
                             .setPlatformName(ConfigManager.getProperty("android.platformName"))
                             .setAutomationName(ConfigManager.getProperty("android.automationName"));
-                    driver.set(new AndroidDriver(new URL("http://127.0.0.1:4723"), options));
+                    appiumDriver.set(new AndroidDriver(new URL("http://127.0.0.1:4723"), options));
+                    Logger.info("Android driver initialized: " + appiumDriver.get());
 
                 } else if (platform.equalsIgnoreCase("ios")) {
                     XCUITestOptions options = new XCUITestOptions()
                             .setDeviceName(ConfigManager.getProperty("ios.deviceName"))
-                            .setApp(ConfigManager.getProperty("ios.appPath"))
+                            .setApp(System.getProperty("user.dir") + ConfigManager.getProperty("ios.appPath"))
                             .setPlatformName(ConfigManager.getProperty("ios.platformName"))
                             .setAutomationName(ConfigManager.getProperty("ios.automationName"))
                             .setUdid(ConfigManager.getProperty("ios.udid"));
-                    driver.set(new IOSDriver(new URL("http://127.0.0.1:4723"), options));
+                    appiumDriver.set(new IOSDriver(new URL("http://127.0.0.1:4723"), options));
+                    Logger.info("iOS driver initialized: " + appiumDriver.get());
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException("Failed to initialize Appium driver for platform: " + platform, e);
             }
         }
-        return driver.get();
+        if (appiumDriver.get() == null) {
+            throw new IllegalStateException("Appium driver is null after initialization attempt for platform: " + platform);
+        }
+        return appiumDriver.get();
     }
 
-    @After
     public static void quitDriver() {
-        if (driver.get() != null) {
-            driver.get().quit();
-            driver.remove();
+        if (appiumDriver.get() != null) {
+            appiumDriver.get().quit();
+            appiumDriver.remove();
+            Logger.info("Driver quit and removed from ThreadLocal");
         }
     }
 }

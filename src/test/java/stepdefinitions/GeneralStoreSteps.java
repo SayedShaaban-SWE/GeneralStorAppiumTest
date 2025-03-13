@@ -5,11 +5,9 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.assertj.core.api.Assertions;
-
 import screens.CartScreen;
 import screens.HomeScreen;
 import screens.ProductsScreen;
-import utils.Hooks;
 
 public class GeneralStoreSteps {
 
@@ -20,7 +18,7 @@ public class GeneralStoreSteps {
 
     @Given("I open the General Store app")
     public void i_open_the_general_store_app() {
-        appiumDriver = Hooks.getDriver("android");
+        appiumDriver = Hooks.getAppiumDriver();
         homePage = new HomeScreen(appiumDriver);
     }
 

@@ -8,7 +8,6 @@ import utils.ScrollHelper;
 
 import java.time.Duration;
 
-
 public class HomeScreen {
 
     private AppiumDriver appiumDriver;
@@ -22,13 +21,15 @@ public class HomeScreen {
     private final By letsShopButton = By.id("com.androidsample.generalstore:id/btnLetsShop");
 
     public HomeScreen(AppiumDriver appiumDriver) {
+        if (appiumDriver == null) {
+            throw new IllegalArgumentException("AppiumDriver cannot be null");
+        }
         this.appiumDriver = appiumDriver;
         this.wait = new WebDriverWait(appiumDriver, Duration.ofSeconds(30)); // Initialize WebDriverWait
     }
 
     public void selectCountry(String country) {
         wait.until(ExpectedConditions.elementToBeClickable(countryDropdown)).click();
-
         ScrollHelper.scrollToElement(appiumDriver, egyptCountry);
         wait.until(ExpectedConditions.elementToBeClickable(egyptCountry)).click();
     }

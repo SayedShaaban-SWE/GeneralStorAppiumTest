@@ -10,7 +10,7 @@ public class ConfigManager {
     static {
         properties = new Properties();
         try {
-            FileInputStream input = new FileInputStream("src/main/resources/config.properties");
+            FileInputStream input = new FileInputStream("src/main/resources/deviceOptions.properties");
             properties.load(input);
         } catch (IOException e) {
             e.printStackTrace();

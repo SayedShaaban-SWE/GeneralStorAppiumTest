@@ -15,8 +15,8 @@ public class ProductsScreen {
     private WebDriverWait wait;
 
     // Locators
-    private final By firstProduct = By.xpath("//android.widget.TextView[@text='ADD TO CART'][1]");
-    private final By secondProduct = By.xpath("//android.widget.TextView[@text='ADD TO CART'][2]");
+    private final By firstProduct = By.xpath("(//*[@resource-id='com.androidsample.generalstore:id/productAddCart'])[1]");
+    private final By secondProduct = By.xpath("(//*[@resource-id='com.androidsample.generalstore:id/productAddCart'])[2]");
     private final By cartButton = By.id("com.androidsample.generalstore:id/appbar_btn_cart");
 
     public ProductsScreen(AppiumDriver appiumDriver) {
